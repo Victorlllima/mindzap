@@ -46,12 +46,12 @@ async function validateApiKey(provider: string, apiKey: string): Promise<Validat
             }
             case 'openai': {
                 const openai = createOpenAI({ apiKey })
-                model = openai('gpt-4o-mini')
+                model = openai('gpt-4.1-mini')
                 break
             }
             case 'anthropic': {
                 const anthropic = createAnthropic({ apiKey })
-                model = anthropic('claude-3-haiku-20240307')
+                model = anthropic('claude-3-5-haiku-20241022')
                 break
             }
             default:

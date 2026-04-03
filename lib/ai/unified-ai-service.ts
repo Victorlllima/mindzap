@@ -11,7 +11,7 @@
  * - `const result = await ai.generateText({ prompt: 'Olá' })`
  */
 
-import { generateText as vercelGenerateText, streamText as vercelStreamText, gateway, type ModelMessage } from 'ai';
+import { generateText as vercelGenerateText, streamText as vercelStreamText, gateway, APICallError, type ModelMessage } from 'ai';
 
 import { getAiGatewayConfig } from './ai-center-config';
 
@@ -53,6 +53,28 @@ export interface GenerateTextResult {
 }
 
 // =============================================================================
+// ERROR HANDLING
+// =============================================================================
+
+/**
+ * Converte APICallError do Gateway em erros legíveis com contexto de ação.
+ * Trata 402 (budget), 429 (rate limit) e 503 (serviço indisponível).
+ */
+function handleGatewayError(error: unknown, modelId: string): never {
+    if (APICallError.isInstance(error)) {
+        switch (error.statusCode) {
+            case 402:
+                throw new Error(`[AI Gateway] Budget excedido para ${modelId}. Verifique os créditos em vercel.com/dashboard.`);
+            case 429:
+                throw new Error(`[AI Gateway] Rate limit atingido para ${modelId}. Tente novamente em alguns segundos.`);
+            case 503:
+                throw new Error(`[AI Gateway] Serviço temporariamente indisponível para ${modelId}. Tente novamente em breve.`);
+        }
+    }
+    throw error;
+}
+
+// =============================================================================
 // MAIN API
 // =============================================================================
 
@@ -79,25 +101,29 @@ export async function generateText(options: GenerateTextOptions): Promise<Genera
     // ChatMessage é estruturalmente compatível com ModelMessage (role + content string)
     const messages = options.messages as unknown as ModelMessage[];
 
-    const result = options.messages
-        ? await vercelGenerateText({
-            model: gateway(modelId),
-            messages,
-            system: options.system,
-            temperature: options.temperature ?? 0.7,
-            ...(options.maxOutputTokens ? { maxOutputTokens: options.maxOutputTokens } : {}),
-            ...(providerOptions ? { providerOptions } : {}),
-        })
-        : await vercelGenerateText({
-            model: gateway(modelId),
-            prompt: options.prompt || '',
-            system: options.system,
-            temperature: options.temperature ?? 0.7,
-            ...(options.maxOutputTokens ? { maxOutputTokens: options.maxOutputTokens } : {}),
-            ...(providerOptions ? { providerOptions } : {}),
-        });
+    try {
+        const result = options.messages
+            ? await vercelGenerateText({
+                model: gateway(modelId),
+                messages,
+                system: options.system,
+                temperature: options.temperature ?? 0.7,
+                ...(options.maxOutputTokens ? { maxOutputTokens: options.maxOutputTokens } : {}),
+                ...(providerOptions ? { providerOptions } : {}),
+            })
+            : await vercelGenerateText({
+                model: gateway(modelId),
+                prompt: options.prompt || '',
+                system: options.system,
+                temperature: options.temperature ?? 0.7,
+                ...(options.maxOutputTokens ? { maxOutputTokens: options.maxOutputTokens } : {}),
+                ...(providerOptions ? { providerOptions } : {}),
+            });
 
-    return { text: result.text, model: modelId };
+        return { text: result.text, model: modelId };
+    } catch (error) {
+        handleGatewayError(error, modelId);
+    }
 }
 
 /**
@@ -140,9 +166,13 @@ export async function streamText(options: StreamTextOptions): Promise<GenerateTe
         });
 
     let fullText = '';
-    for await (const part of result.textStream) {
-        fullText += part;
-        options.onChunk?.(part);
+    try {
+        for await (const part of result.textStream) {
+            fullText += part;
+            options.onChunk?.(part);
+        }
+    } catch (error) {
+        handleGatewayError(error, modelId);
     }
 
     options.onComplete?.(fullText);
