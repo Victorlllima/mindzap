@@ -57,6 +57,25 @@ export interface GenerateTextResult {
 // =============================================================================
 
 /**
+ * Garante que o modelId está no formato "provider/model" exigido pelo AI Gateway.
+ * Falha rápido antes de chegar ao gateway, com mensagem clara de diagnóstico.
+ *
+ * @throws {Error} Se o formato for inválido.
+ */
+function assertValidGatewayModelId(modelId: string): void {
+    if (!modelId || typeof modelId !== 'string') {
+        throw new Error(`[AI Gateway] Model ID inválido: "${modelId}". Um model ID não-vazio é obrigatório.`);
+    }
+    const parts = modelId.split('/');
+    if (parts.length !== 2 || !parts[0] || !parts[1]) {
+        throw new Error(
+            `[AI Gateway] Formato de modelo inválido: "${modelId}". ` +
+            `Use "provider/model" — ex: "google/gemini-2.5-flash", "anthropic/claude-sonnet-4.5".`
+        );
+    }
+}
+
+/**
  * Converte APICallError do Gateway em erros legíveis com contexto de ação.
  * Trata 402 (budget), 429 (rate limit) e 503 (serviço indisponível).
  */
@@ -91,6 +110,7 @@ export async function generateText(options: GenerateTextOptions): Promise<Genera
     const gatewayConfig = await getAiGatewayConfig();
     const modelId = options.model || gatewayConfig.primaryModel;
 
+    assertValidGatewayModelId(modelId);
     console.log(`[AI Service] Generating with ${modelId} (via Gateway)`);
 
     // Monta providerOptions com fallbacks se configurado
@@ -139,6 +159,7 @@ export async function streamText(options: StreamTextOptions): Promise<GenerateTe
     const gatewayConfig = await getAiGatewayConfig();
     const modelId = options.model || gatewayConfig.primaryModel;
 
+    assertValidGatewayModelId(modelId);
     console.log(`[AI Service] Streaming with ${modelId} (via Gateway)`);
 
     const providerOptions = gatewayConfig.fallbackModels?.length
