@@ -37,7 +37,7 @@ export async function getOCRProvider(): Promise<OCRProvider | null> {
     geminiOcrModel = settingsMap.get('ocr_gemini_model') || DEFAULT_OCR_MODEL
   }
 
-  // Fallback para env var (canônico: @ai-sdk/google; alias: GEMINI_API_KEY)
+  // Env var: canônico @ai-sdk/google; GEMINI_API_KEY aceito como alias retrocompat
   googleApiKey = googleApiKey || process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY || undefined
 
   if (!googleApiKey) {
