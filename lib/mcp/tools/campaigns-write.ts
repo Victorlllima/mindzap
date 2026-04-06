@@ -2,7 +2,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { z } from 'zod'
 import { ok, err } from '@/lib/mcp/helpers'
 
-const baseUrl = () => process.env.NEXTAUTH_URL ?? 'http://localhost:3000'
+const baseUrl = () => process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
 const apiKey = () => process.env.SMARTZAP_API_KEY ?? ''
 
 const headers = () => ({
@@ -121,10 +121,15 @@ export function registerCampaignsWriteTools(server: McpServer) {
       }
       const campaign = await getRes.json()
 
-      const res = await fetch(`${baseUrl()}/api/campaigns/${id}/start`, {
+      // Dispara via /api/campaign/dispatch (endpoint real de envio — não existe /campaigns/:id/start)
+      const res = await fetch(`${baseUrl()}/api/campaign/dispatch`, {
         method: 'POST',
-        headers: headers(),
-        body: JSON.stringify({ campaign }),
+        headers: { ...headers(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          campaignId: id,
+          templateName: campaign.templateName,
+          templateVariables: campaign.templateVariables,
+        }),
       })
       const body = await res.json().catch(() => ({}))
       if (!res.ok) return err(body.error ?? `HTTP ${res.status}`)

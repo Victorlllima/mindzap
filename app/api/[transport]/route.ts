@@ -63,7 +63,8 @@ const authWrappedHandler = withMcpAuth(
 
     // Retorna AuthInfo mínimo compatível. O contexto real fica no AsyncLocalStorage.
     return { token, clientId: ctx.isAdmin ? 'admin' : 'api', scopes: [] }
-  }
+  },
+  { required: true }
 )
 
 async function wrappedHandler(request: Request) {

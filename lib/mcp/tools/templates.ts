@@ -80,7 +80,7 @@ export function registerTemplatesTools(server: McpServer) {
     },
     async () => {
       const res = await fetch(
-        `${process.env.NEXTAUTH_URL ?? 'http://localhost:3000'}/api/templates/sync`,
+        `${process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')}/api/templates/sync`,
         {
           method: 'POST',
           headers: { 'x-api-key': process.env.SMARTZAP_API_KEY ?? '' },

@@ -4,6 +4,9 @@ import { getSupabaseAdmin } from '@/lib/supabase'
 import { ok, err } from '@/lib/mcp/helpers'
 
 const getDb = () => getSupabaseAdmin()!
+const baseUrl = () =>
+  process.env.NEXT_PUBLIC_APP_URL ||
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
 
 export function registerCampaignsTools(server: McpServer) {
   // ─── sz.campaigns.list ───────────────────────────────────────────────────
@@ -14,7 +17,7 @@ export function registerCampaignsTools(server: McpServer) {
       description: 'Lista campanhas com filtro de status opcional.',
       inputSchema: {
         status: z
-          .enum(['Rascunho', 'Agendada', 'Enviando', 'Concluída', 'Pausada', 'Falhou'])
+          .enum(['Rascunho', 'Agendado', 'Enviando', 'Concluído', 'Pausado', 'Falhou'])
           .optional()
           .describe('Filtrar por status'),
         limit: z.number().int().min(1).max(50).default(20),
@@ -145,7 +148,7 @@ export function registerCampaignsTools(server: McpServer) {
       },
     },
     async ({ id }) => {
-      const res = await fetch(`${process.env.NEXTAUTH_URL ?? 'http://localhost:3000'}/api/campaign/${id}/pause`, {
+      const res = await fetch(`${baseUrl()}/api/campaign/${id}/pause`, {
         method: 'POST',
         headers: { 'x-api-key': process.env.SMARTZAP_API_KEY ?? '' },
       })
@@ -166,7 +169,7 @@ export function registerCampaignsTools(server: McpServer) {
       },
     },
     async ({ id }) => {
-      const res = await fetch(`${process.env.NEXTAUTH_URL ?? 'http://localhost:3000'}/api/campaign/${id}/resume`, {
+      const res = await fetch(`${baseUrl()}/api/campaign/${id}/resume`, {
         method: 'POST',
         headers: { 'x-api-key': process.env.SMARTZAP_API_KEY ?? '' },
       })
