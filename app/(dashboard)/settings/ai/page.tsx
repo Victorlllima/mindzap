@@ -139,15 +139,11 @@ const TEMPLATE_STRATEGIES: StrategyItem[] = [
   },
 ]
 
-// URLs para criação de chaves de API de cada provider
+// URL para criação de chave de API do Google
 const API_KEY_URLS: Record<AIProvider, { url: string; label: string }> = {
   google: {
     url: 'https://aistudio.google.com/apikey',
     label: 'Google AI Studio',
-  },
-  openai: {
-    url: 'https://platform.openai.com/api-keys',
-    label: 'OpenAI Platform',
   },
 }
 
@@ -497,7 +493,6 @@ export default function AICenterPage() {
     isSavingOcr,
     isStrategiesOpen,
     handleSave,
-    handleProviderSelect,
     handleModelChange,
     handleOcrGeminiModelChange,
     handlePromptChange,
@@ -592,29 +587,11 @@ export default function AICenterPage() {
           <div className="space-y-1">
             <h3 className="text-lg font-semibold text-[var(--ds-text-primary)]">Modelo principal</h3>
             <p className="text-sm text-[var(--ds-text-secondary)]">
-              Escolha o provider e modelo para produção.
+              Escolha o modelo Gemini para produção.
             </p>
           </div>
 
           <div className="mt-5 space-y-4">
-            {/* Provider selector */}
-            <div className="flex gap-3">
-              {(['google', 'openai'] as const).map((p) => (
-                <button
-                  key={p}
-                  type="button"
-                  onClick={() => { handleProviderSelect(p); void fetchModels(p) }}
-                  className={`flex-1 rounded-xl border px-4 py-3 text-sm font-medium transition ${
-                    provider === p
-                      ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300'
-                      : 'border-[var(--ds-border-default)] bg-[var(--ds-bg-elevated)] text-[var(--ds-text-secondary)] hover:bg-[var(--ds-bg-hover)]'
-                  }`}
-                >
-                  {p === 'google' ? '✨ Google Gemini' : '⚡ OpenAI'}
-                </button>
-              ))}
-            </div>
-
             {/* Model selector */}
             <div>
               <label className="text-xs text-[var(--ds-text-muted)]">Modelo</label>
