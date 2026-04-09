@@ -661,8 +661,8 @@ export default function AICenterPage() {
         {/* Mem0 Memory Section */}
         <Mem0Panel />
 
-        {/* Helicone Observability Section (usado quando Gateway desabilitado) */}
-        <HeliconePanel />
+        {/* Helicone Observability Section — só visível em dev mode */}
+        {isDevMode && <HeliconePanel />}
 
         {/* Template Strategies Section - Collapsible */}
         <section className="relative overflow-hidden rounded-2xl border border-[var(--ds-border-default)] bg-gradient-to-br from-[var(--ds-bg-elevated)] to-[var(--ds-bg-surface)]">
