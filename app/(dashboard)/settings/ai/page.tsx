@@ -583,45 +583,6 @@ export default function AICenterPage() {
       <AIGatewayPanel />
 
       <div className="space-y-6">
-        <section className="glass-panel rounded-2xl p-6">
-          <div className="space-y-1">
-            <h3 className="text-lg font-semibold text-[var(--ds-text-primary)]">Modelo principal</h3>
-            <p className="text-sm text-[var(--ds-text-secondary)]">
-              Escolha o modelo Gemini para produção.
-            </p>
-          </div>
-
-          <div className="mt-5 space-y-4">
-            {/* Model selector */}
-            <div>
-              <label className="text-xs text-[var(--ds-text-muted)]">Modelo</label>
-              <div className="relative mt-2">
-                {modelsLoading ? (
-                  <div className="flex h-10 items-center gap-2 rounded-lg border border-[var(--ds-border-default)] bg-[var(--ds-bg-surface)] px-3 text-sm text-[var(--ds-text-muted)]">
-                    <Loader2 className="size-4 animate-spin" />
-                    Carregando modelos...
-                  </div>
-                ) : (
-                  <select
-                    value={model}
-                    onChange={(e) => handleModelChange(e.target.value)}
-                    onFocus={() => { if (models.length === 0) void fetchModels(provider) }}
-                    className="w-full rounded-lg border border-[var(--ds-border-default)] bg-[var(--ds-bg-surface)] px-3 py-2 text-sm text-[var(--ds-text-primary)] outline-none transition focus:border-emerald-500/40"
-                  >
-                    {models.length > 0 ? (
-                      models.map((m) => (
-                        <option key={m.id} value={m.id}>{m.name}</option>
-                      ))
-                    ) : (
-                      <option value={model}>{model}</option>
-                    )}
-                  </select>
-                )}
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* OCR Configuration Section */}
         <section className="glass-panel rounded-2xl p-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
