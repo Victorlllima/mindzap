@@ -80,7 +80,7 @@ export function WebhookAlertBanner() {
       return null; // Erro na API, não mostra banner
     }
 
-    const active = findActiveUrl(webhookSubscription.hierarchy, webhookSubscription.MindZapWebhookUrl);
+    const active = findActiveUrl(webhookSubscription.hierarchy, webhookSubscription.smartzapWebhookUrl);
 
     // URL do MindZap configurada = OK
     if (active.isMindZap) {
