@@ -1,4 +1,4 @@
-import { randomBytes } from 'crypto'
+﻿import { randomBytes } from 'crypto'
 
 /**
  * Authentication & Authorization Middleware
@@ -74,8 +74,8 @@ export async function verifyApiKey(request: NextRequest): Promise<AuthResult> {
   }
 
   // Check against environment variables
-  const envApiKey = process.env.SMARTZAP_API_KEY
-  const envAdminKey = process.env.SMARTZAP_ADMIN_KEY
+  const envApiKey = process.env.MindZap_API_KEY
+  const envAdminKey = process.env.MindZap_ADMIN_KEY
 
   if (envAdminKey && apiKey === envAdminKey) {
     return { valid: true, keyType: 'admin' }
@@ -143,7 +143,7 @@ export function unauthorizedResponse(message: string = 'Unauthorized'): NextResp
     {
       status: 401,
       headers: {
-        'WWW-Authenticate': 'Bearer realm="SmartZap API"'
+        'WWW-Authenticate': 'Bearer realm="MindZap API"'
       }
     }
   )

@@ -121,7 +121,7 @@ const CompactSidebar = memo(function CompactSidebar({
         <div
           className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--ds-border-default)] bg-linear-to-br from-primary-600 to-primary-800 shadow-lg shadow-primary-900/20"
           role="img"
-          aria-label="Logo SmartZap"
+          aria-label="Logo MindZap"
         >
           <Zap className="text-white" size={18} fill="currentColor" aria-hidden="true" />
         </div>
@@ -240,7 +240,7 @@ const ExpandedSidebar = memo(function ExpandedSidebar({
           <div
             className="w-10 h-10 bg-linear-to-br from-primary-600 to-primary-800 rounded-xl flex items-center justify-center mr-3 shadow-lg shadow-primary-900/20 border border-[var(--ds-border-default)]"
             role="img"
-            aria-label="Logo SmartZap"
+            aria-label="Logo MindZap"
           >
             <Zap className="text-white" size={20} fill="currentColor" aria-hidden="true" />
           </div>

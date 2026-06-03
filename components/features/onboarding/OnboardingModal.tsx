@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useCallback } from 'react';
 import {
@@ -403,7 +403,7 @@ export function OnboardingModal({ isConnected, onSaveCredentials, onMarkComplete
                   <span className="text-3xl">🚀</span>
                 </div>
               </div>
-              <DialogTitle className="text-2xl">Bem-vindo ao SmartZap!</DialogTitle>
+              <DialogTitle className="text-2xl">Bem-vindo ao MindZap!</DialogTitle>
               <DialogDescription className="text-base mt-2">
                 Para enviar mensagens pelo WhatsApp, você precisa conectar uma conta do WhatsApp Business API.
               </DialogDescription>

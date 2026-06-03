@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect } from 'react';
 import { AlertTriangle, X, Settings } from 'lucide-react';
@@ -26,15 +26,15 @@ function findActiveUrl(
   expectedUrl: string | null | undefined
 ): {
   url: string | null;
-  isSmartZap: boolean;
+  isMindZap: boolean;
 } {
-  if (!hierarchy) return { url: null, isSmartZap: false };
+  if (!hierarchy) return { url: null, isMindZap: false };
 
   // Prioridade: #1 Phone > #2 WABA > #3 APP
   const activeUrl = hierarchy.phoneNumberOverride || hierarchy.wabaOverride || hierarchy.appWebhook;
   return {
     url: activeUrl,
-    isSmartZap: urlsMatch(activeUrl, expectedUrl),
+    isMindZap: urlsMatch(activeUrl, expectedUrl),
   };
 }
 
@@ -80,18 +80,18 @@ export function WebhookAlertBanner() {
       return null; // Erro na API, não mostra banner
     }
 
-    const active = findActiveUrl(webhookSubscription.hierarchy, webhookSubscription.smartzapWebhookUrl);
+    const active = findActiveUrl(webhookSubscription.hierarchy, webhookSubscription.MindZapWebhookUrl);
 
-    // URL do SmartZap configurada = OK
-    if (active.isSmartZap) {
+    // URL do MindZap configurada = OK
+    if (active.isMindZap) {
       return null;
     }
 
-    // URL configurada mas não é do SmartZap
-    if (active.url && !active.isSmartZap) {
+    // URL configurada mas não é do MindZap
+    if (active.url && !active.isMindZap) {
       return {
         title: 'Webhook apontando para outro sistema.',
-        description: 'A URL configurada não é do SmartZap.',
+        description: 'A URL configurada não é do MindZap.',
       };
     }
 
